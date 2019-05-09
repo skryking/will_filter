@@ -128,7 +128,7 @@
   <tbody>
 
     <% if opts[:header] %>
-      <%=render(:partial => "/will_filter/common/results_table_summary", :locals => {:data => opts[:header], :filter => filter, :carray => carray}) %>
+      <%=render(:partial => "will_filter/common/results_table_summary", :locals => {:data => opts[:header], :filter => filter, :carray => carray}) %>
     <% end -%>
 
     <% results.each_with_index do |obj, index| %>
@@ -189,7 +189,7 @@
     <% end -%>
 
     <% if opts[:footer] %>
-      <%=render(:partial => "/will_filter/common/results_table_summary", :locals => {:data => opts[:footer], :filter => filter, :carray => carray}) %>
+      <%=render(:partial => "will_filter/common/results_table_summary", :locals => {:data => opts[:footer], :filter => filter, :carray => carray}) %>
     <% end -%>
 
   </tbody>
@@ -205,7 +205,7 @@
         </td>
     </tr>
 </table>
-  
+
 <script>
   function wfVerifyTrigger(check) {
     if (!check.checked) {

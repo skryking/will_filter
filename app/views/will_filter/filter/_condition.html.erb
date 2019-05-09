@@ -28,7 +28,7 @@
     </script>
   </td>
   <td class="values">
-    <%= render :partial => "/will_filter/filter/containers/#{condition.container.template_name}", :locals => {:container => condition.container, :index => index} %>
+    <%= render :partial => "will_filter/filter/containers/#{condition.container.template_name}", :locals => {:container => condition.container, :index => index} %>
   </td>
   <td class="actions">
     <button type="button" class="btn btn-default btn-secondary btn-sm" onclick="wfFilter.removeConditionAt('<%= index %>')" style="width: 25px; height: 25px;">
