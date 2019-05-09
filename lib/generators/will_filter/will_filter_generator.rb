@@ -35,7 +35,7 @@ require 'rails/generators/migration'
 
 class WillFilterGenerator < Rails::Generators::Base
   include Rails::Generators::Migration
-  
+
   def self.source_root
     @source_root ||= File.expand_path('../templates', __FILE__)
   end
@@ -51,6 +51,6 @@ class WillFilterGenerator < Rails::Generators::Base
 
   def create_migration_file
     migration_template 'create_will_filter_filters.rb', 'db/migrate/create_will_filter_filters.rb'
-    copy_file 'config.yml', 'config/will_filter/config.yml'
-  end      
+    copy_file 'config.yml', 'configwill_filter/config.yml'
+  end
 end
