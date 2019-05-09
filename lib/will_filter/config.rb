@@ -56,7 +56,7 @@ module WillFilter
     end
 
     def self.config
-      @config ||= load_yml("/configwill_filter/config.yml")
+      @config ||= load_yml("/config/will_filter/config.yml")
     end
 
     def self.require_filter_extensions?
