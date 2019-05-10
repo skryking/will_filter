@@ -138,7 +138,8 @@
       <% if opts[:full_link] %>
 
         <tr class='data_row <%=(index % 2 == 0) ? "wf_row_even" : "wf_row_odd"%>' data-link="<%= url_for(obj) + "/" + "/edit" %>">
-
+     <% else %>
+        <tr class='data_row <%=(index % 2 == 0) ? "wf_row_even" : "wf_row_odd"%>'>
       <% end %>
       <% carray.each_with_index do |cmeta, column_index| %>
         <%
@@ -213,6 +214,15 @@
       </td>
     </tr>
   </table>
+
+  <script type="text/javascript">
+      //Control for Tissue Table Dynamic Linking
+      jQuery(function ($) {
+          $("tr[data-link]").click(function () {
+              window.location.href = $(this).data('link');
+          });
+      });
+  </script>
 
   <script>
       function wfVerifyTrigger(check) {
