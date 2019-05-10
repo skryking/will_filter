@@ -1,19 +1,20 @@
 <%= stylesheet_link_tag("will_filter/filter") -%>
 
 <% if results.size > 0 %>
-<table class='wf_paginator'>
+  <table class='wf_paginator'>
     <tr>
-        <td style='text-align:left;vertical-align:middle;'>
-            <%= paginate(results) %>
-        </td>
-        <td style='text-align:right;vertical-align:middle;'>
-						Showing <%= results.offset_value + 1 %> - <%= results.offset_value + results.length %> of <%= results.total_count %>
-        </td>
+      <td style='text-align:left;vertical-align:middle;'>
+        <%= paginate(results) %>
+      </td>
+      <td style='text-align:right;vertical-align:middle;'>
+        Showing <%= results.offset_value + 1 %> - <%= results.offset_value + results.length %>
+        of <%= results.total_count %>
+      </td>
     </tr>
-</table>
+  </table>
 
-<table class='wf_results_table'>
-  <thead>
+  <table class='wf_results_table'>
+    <thead>
     <tr>
       <%
         carray = [] # stores the order of the columns
@@ -98,9 +99,9 @@
           # extra styling that can be applied on a column
           title_style           = cmeta[:title_style] || ""
           title_style           << ";width:15px" if cmeta[:key] == :checkbox
-        %>
+         %>
 
-        <th class="<%= title_class_name %>" style="<%=title_style%>">
+        <th class="<%= title_class_name %>" style="<%= title_style %>">
           <div class="table_head_container">
             <% if sortable %>
               <div class="sort_control">
@@ -123,117 +124,124 @@
         </th>
       <% end %>
     </tr>
-  </thead>
+    </thead>
 
-  <tbody>
+    <tbody>
 
     <% if opts[:header] %>
-      <%=render(:partial => "will_filter/common/results_table_summary", :locals => {:data => opts[:header], :filter => filter, :carray => carray}) %>
+      <%= render(:partial => "will_filter/common/results_table_summary", :locals => {:data => opts[:header], :filter => filter, :carray => carray}) %>
     <% end -%>
 
+
+
     <% results.each_with_index do |obj, index| %>
-      <tr class='data_row <%=(index % 2 == 0) ? "wf_row_even" : "wf_row_odd"%>'>
-        <% carray.each_with_index do |cmeta, column_index| %>
-          <%
-           if cmeta[:style].nil?
-		value_style = 'padding-top:2px;padding-bottom:2px;vertical-align:middle;'
-           elsif cmeta[:style].is_a?(Proc)
-              value_style = cmeta[:style].call(obj)
-            else
-              value_style = cmeta[:style]
-            end
+      <% if opts[:full_link] %>
+         <tr class='data_row <%= (index % 2 == 0) ? "wf_row_even" : "wf_row_odd" %>' data-link="<%= url_for(obj) + "/" + "/edit" %>">
+      <% else %>
+        <tr class='data_row <%= (index % 2 == 0) ? "wf_row_even" : "wf_row_odd" %>'>
+      <% end %>
+      <% carray.each_with_index do |cmeta, column_index| %>
+        <%
+          if cmeta[:style].nil?
+            value_style = 'padding-top:2px;padding-bottom:2px;vertical-align:middle;'
+          elsif cmeta[:style].is_a?(Proc)
+            value_style = cmeta[:style].call(obj)
+          else
+            value_style = cmeta[:style]
+          end
 
-            value_class = cmeta[:class] || ''
+          value_class = cmeta[:class] || ''
 
-            if cmeta[:value].nil?
-              value = obj.send(cmeta[:key])
-            elsif cmeta[:value].is_a?(Proc)
-              value = cmeta[:value].call(obj)
-            else
-              value = cmeta[:value]
-            end
+          if cmeta[:value].nil?
+            value = obj.send(cmeta[:key])
+          elsif cmeta[:value].is_a?(Proc)
+            value = cmeta[:value].call(obj)
+          else
+            value = cmeta[:value]
+          end
 
-            value_style << 'width:30px;' if cmeta[:key] == :checkbox
-            value_class << ' current_sort' if filter and filter.column_sorted?(cmeta[:key])
+          value_style << 'width:30px;' if cmeta[:key] == :checkbox
+          value_class << ' current_sort' if filter and filter.column_sorted?(cmeta[:key])
 
-            if cmeta[:filterable]
-              filter_value = cmeta[:value].nil? ? value : obj.send(cmeta[:key])
-            end
-          %>
-          <td style='<%=value_style%>' class='<%=value_class%>'>
-              <% if cmeta[:filterable] %>
-                <div style='float:right;'><%=link_to(image_tag("will_filter/filter.png", :style=>"width:12px;"), results.add_filter_condition(cmeta[:key], :is, filter_value.to_s).to_params, {:title => "Show only #{filter_value}"}) %></div>
-              <% end -%>
+          if cmeta[:filterable]
+            filter_value = cmeta[:value].nil? ? value : obj.send(cmeta[:key])
+          end
+        %>
+        <td style='<%= value_style %>' class='<%= value_class %>'>
+          <% if cmeta[:filterable] %>
+            <div style='float:right;'><%= link_to(image_tag("will_filter/filter.png", :style => "width:12px;"), results.add_filter_condition(cmeta[:key], :is, filter_value.to_s).to_params, {:title => "Show only #{filter_value}"}) %></div>
+          <% end -%>
 
-               <% if cmeta[:key] == :checkbox %>
-                  <%= check_box_tag("#{value}[]", obj.id, false, :id => "wf_check_#{index}", :onClick => "wfVerifyTrigger(this)") %>
+          <% if cmeta[:key] == :checkbox %>
+            <%= check_box_tag("#{value}[]", obj.id, false, :id => "wf_check_#{index}", :onClick => "wfVerifyTrigger(this)") %>
 
-               <% elsif value.is_a?(Hash) %>
-                  <% value.each do |key, value| %>
-                    <strong><%=key%>:</strong> <%= value %>;
-                  <% end -%>
+          <% elsif value.is_a?(Hash) %>
+            <% value.each do |key, value| %>
+              <strong><%= key %>:</strong> <%= value %>;
+            <% end -%>
 
-                <% elsif value.is_a?(Time) %>
-                  <%= value.strftime("%m/%d/%Y %l:%M:%S %p %Z") %>
+          <% elsif value.is_a?(Time) %>
+            <%= value.strftime("%m/%d/%Y %l:%M:%S %p %Z") %>
 
-                <% elsif value.is_a?(Date) %>
-                  <%= value.strftime("%m/%d/%Y") %>
+          <% elsif value.is_a?(Date) %>
+            <%= value.strftime("%m/%d/%Y") %>
 
-               <% else %>
+          <% else %>
 
-                  <%= value.to_s %>
-               <% end -%>
-          </td>
-        <% end -%>
+            <%= value.to_s %>
+          <% end -%>
+        </td>
+      <% end -%>
       </tr>
     <% end -%>
 
     <% if opts[:footer] %>
-      <%=render(:partial => "will_filter/common/results_table_summary", :locals => {:data => opts[:footer], :filter => filter, :carray => carray}) %>
+      <%= render(:partial => "will_filter/common/results_table_summary", :locals => {:data => opts[:footer], :filter => filter, :carray => carray}) %>
     <% end -%>
 
-  </tbody>
-</table>
+    </tbody>
+  </table>
 
-<table class='wf_paginator'>
+  <table class='wf_paginator'>
     <tr>
-        <td style='text-align:left;vertical-align:middle;'>
-            <%= paginate(results) %>
-        </td>
-        <td style='text-align:right;vertical-align:middle;'>
-            Showing <%= results.offset_value + 1 %> - <%= results.offset_value + results.length %> of <%= results.total_count %>
-        </td>
+      <td style='text-align:left;vertical-align:middle;'>
+        <%= paginate(results) %>
+      </td>
+      <td style='text-align:right;vertical-align:middle;'>
+        Showing <%= results.offset_value + 1 %> - <%= results.offset_value + results.length %>
+        of <%= results.total_count %>
+      </td>
     </tr>
-</table>
+  </table>
 
-<script>
-  function wfVerifyTrigger(check) {
-    if (!check.checked) {
-      var check_all = document.getElementById("wf_check_all");
-      check_all.checked = false;
-    }
-  }
+  <script>
+      function wfVerifyTrigger(check) {
+          if (!check.checked) {
+              var check_all = document.getElementById("wf_check_all");
+              check_all.checked = false;
+          }
+      }
 
-  function wfCheckAll(trigger) {
-    var index = 0;
-    var check = document.getElementById("wf_check_" + index);
-    while (check) {
-      check.checked = trigger.checked;
-      check = document.getElementById("wf_check_" + (++index));
-    }
-  }
-</script>
+      function wfCheckAll(trigger) {
+          var index = 0;
+          var check = document.getElementById("wf_check_" + index);
+          while (check) {
+              check.checked = trigger.checked;
+              check = document.getElementById("wf_check_" + (++index));
+          }
+      }
+  </script>
 
 <% else %>
 
-<table class='wf_paginator' style="margin-top:10px; margin-bottom:10px;">
+  <table class='wf_paginator' style="margin-top:10px; margin-bottom:10px;">
     <tr>
-        <td style='text-align:left'>
-            No results found
-        </td>
-        <td style='text-align:right'>
-        </td>
+      <td style='text-align:left'>
+        No results found
+      </td>
+      <td style='text-align:right'>
+      </td>
     </tr>
-</table>
+  </table>
 
 <% end %>
