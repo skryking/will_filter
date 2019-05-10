@@ -136,9 +136,9 @@
 
     <% results.each_with_index do |obj, index| %>
       <% if opts[:full_link] %>
-         <tr class='data_row <%= (index % 2 == 0) ? "wf_row_even" : "wf_row_odd" %>' data-link="<%= url_for(obj) + "/" + "/edit" %>">
-      <% else %>
-        <tr class='data_row <%= (index % 2 == 0) ? "wf_row_even" : "wf_row_odd" %>'>
+
+        <tr class='data_row <%=(index % 2 == 0) ? "wf_row_even" : "wf_row_odd"%>' data-link="<%= url_for(obj) + "/" + "/edit" %>">
+
       <% end %>
       <% carray.each_with_index do |cmeta, column_index| %>
         <%
